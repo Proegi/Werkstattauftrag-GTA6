@@ -293,6 +293,10 @@ const PARTS = {
    url:"https://www.intel.de/content/www/de/de/products/sku/132223/intel-core-i312100f-processor-12m-cache-up-to-4-30-ghz/specifications.html"},
   {id:"c1", n:"Intel Core i5-12400",  k:1, s:"Sockel LGA1700 · bis 4,4 GHz · 18 MB Cache", w:65,  p:165,
    url:"https://www.intel.de/content/www/de/de/products/sku/134586/intel-core-i512400-processor-18m-cache-up-to-4-40-ghz/specifications.html"},
+  {id:"c1f", n:"Intel Core i5-12400F", k:1, s:"Sockel LGA1700 · bis 4,4 GHz · 18 MB Cache", w:65, p:140, bonus:true,
+   url:"https://www.intel.de/content/www/de/de/products/sku/134587/intel-core-i512400f-processor-18m-cache-up-to-4-40-ghz/specifications.html"},
+  {id:"c2", n:"Intel Core i5-14400F", k:3, s:"Sockel LGA1700 · bis 4,7 GHz · 20 MB Cache", w:65, p:165, bonus:true,
+   url:"https://www.intel.de/content/www/de/de/products/sku/236777/intel-core-i5-processor-14400f-20m-cache-up-to-4-70-ghz/specifications.html"},
   {id:"c3", n:"Intel Core i7-12700F", k:3, s:"Sockel LGA1700 · bis 4,9 GHz · 25 MB Cache", w:65,  p:250,
    url:"https://www.intel.de/content/www/de/de/products/sku/134592/intel-core-i712700f-processor-25m-cache-up-to-4-90-ghz/specifications.html"},
   {id:"c4", n:"Intel Core i9-14900K", k:4, s:"Sockel LGA1700 · bis 6,0 GHz · 36 MB Cache", w:253, p:445,
@@ -303,6 +307,10 @@ const PARTS = {
    url:"https://www.intel.de/content/www/de/de/products/sku/227959/intel-arc-a380-graphics/specifications.html"},
   {id:"g1", n:"NVIDIA GeForce RTX 5060", k:1, s:"PCIe 5.0 x8 · ca. 145 W",  w:145, p:460,
    url:"https://www.nvidia.com/de-de/geforce/graphics-cards/compare/#compare-50"},
+  {id:"g2a", n:"NVIDIA GeForce RTX 5060 Ti 8 GB", k:1, s:"PCIe 5.0 x8 · ca. 180 W", w:180, p:520, bonus:true,
+   url:"https://www.nvidia.com/de-de/geforce/graphics-cards/compare/#compare-50"},
+  {id:"g2b", n:"NVIDIA GeForce RTX 5060 Ti 16 GB", k:3, s:"PCIe 5.0 x8 · ca. 180 W", w:180, p:820, bonus:true,
+   url:"https://www.nvidia.com/de-de/geforce/graphics-cards/compare/#compare-50"},
   {id:"g3", n:"NVIDIA GeForce RTX 5070", k:3, s:"PCIe 5.0 x16 · ca. 250 W", w:250, p:870,
    url:"https://www.nvidia.com/de-de/geforce/graphics-cards/compare/#compare-50"},
   {id:"g4", n:"NVIDIA GeForce RTX 5080", k:4, s:"PCIe 5.0 x16 · ca. 360 W", w:360, p:1800,
@@ -311,9 +319,18 @@ const PARTS = {
  ram:[
   {id:"r8",  n:"2 × 4 GB DDR5-5600",  gb:8,  s:"Kit aus 2 Riegeln · DIMM · CL40", w:3, p:140},
   {id:"r16", n:"2 × 8 GB DDR5-5600",  gb:16, s:"Kit aus 2 Riegeln · DIMM · CL40", w:5, p:250},
+  {id:"r16d4", n:"2 × 8 GB DDR4-3200", gb:16, s:"Kit aus 2 Riegeln · DIMM · CL16", w:5, p:195, bonus:true},
   {id:"r32", n:"2 × 16 GB DDR5-5600", gb:32, s:"Kit aus 2 Riegeln · DIMM · CL40", w:6, p:470},
   {id:"r64", n:"2 × 32 GB DDR5-5600", gb:64, s:"Kit aus 2 Riegeln · DIMM · CL40", w:8, p:900}
  ]
+};
+
+/* Werte aus den Herstellerdatenblättern, nur für die Auswertung der Bonusaufträge (wird nicht angezeigt) */
+const DS = {
+  c0:{kerne:4,threads:8,igpu:false},   c1:{kerne:6,threads:12,igpu:true},  c1f:{kerne:6,threads:12,igpu:false},
+  c2:{kerne:10,threads:16,igpu:false}, c3:{kerne:12,threads:20,igpu:false}, c4:{kerne:24,threads:32,igpu:true},
+  g0:{vram:6}, g1:{vram:8}, g2a:{vram:8}, g2b:{vram:16}, g3:{vram:12}, g4:{vram:16},
+  r8:{gb:8,ddr:5}, r16:{gb:16,ddr:5}, r16d4:{gb:16,ddr:4}, r32:{gb:32,ddr:5}, r64:{gb:64,ddr:5}
 };
 
 const BASIS = {
@@ -339,6 +356,20 @@ const JOBS = [
  no:"GTA-02", title:"Streaming-PC für \"ViceCityVibes\"", budget:2250, hilfe:1, set:1, liste:false,
  kunde:"Eine Streamerin will am Release-Tag der PC-Version live gehen. Ihre Zuschauer sollen GTA 6 in schöner Grafik auf ihrem WQHD-Monitor sehen. Sie hat mehr Geld zur Verfügung, will aber nichts bezahlen, was sie nicht braucht.",
  need:{cpu:3,gpu:3,ram:32}
+},
+/* Bonusaufträge: zusätzliche Bauteile (bonus:true) werden nur hier angezeigt.
+   Richtig ist je Bauteilart das günstigste Bauteil, das alle Anforderungen (req) erfüllt. */
+{
+ no:"BONUS-1", title:"Erst mal ohne Grafikkarte", budget:1350, hilfe:1, set:0, liste:false, bonus:true,
+ kunde:"Jonas (17) will GTA 6 spielen, sobald die PC-Version erscheint – niedrige Einstellungen reichen ihm. Die Grafikkarte ist bestellt, kommt aber erst in drei Wochen. Bis dahin will er den PC schon für die Schule nutzen: Texte schreiben, recherchieren, Videos schauen. Er will so wenig wie möglich ausgeben.",
+ req:{kerne:6,threads:12,igpu:true,vram:8,gb:16},
+ tipp:"Lest den Kundentext noch einmal genau: Was muss der PC können, solange die Grafikkarte noch fehlt?"
+},
+{
+ no:"BONUS-2", title:"WQHD für wenig Geld", budget:1900, hilfe:1, set:1, liste:false, bonus:true,
+ kunde:"Ein Streamer will GTA 6 in hohen Einstellungen auf seinem WQHD-Monitor spielen. Sein Budget ist deutlich knapper als bei ViceCityVibes. Er meint: „Ein i5 ist für die empfohlenen Anforderungen doch sicher zu schwach, oder?“ Er will keinen Euro mehr ausgeben als nötig.",
+ req:{kerne:8,threads:16,igpu:false,vram:12,gb:32},
+ tipp:"Der Name eines Bauteils verrät nicht, was es kann. Entscheidend sind die Werte im Datenblatt."
 }
 ];
 
@@ -366,14 +397,31 @@ function ideal(){
   return b;
 }
 
+function sichtbar(kind){return PARTS[kind].filter(x=>!x.bonus||job.bonus);}
+
+/* Bonus: erfüllt das Bauteil die Anforderungen? "bad" = passt nicht zum Grundpaket (DDR5-Mainboard) */
+function erfuellt(kind,x){
+  const d=DS[x.id], r=job.req;
+  if(kind==="cpu") return d.kerne>=r.kerne&&d.threads>=r.threads&&(!r.igpu||d.igpu);
+  if(kind==="gpu") return d.vram>=r.vram;
+  return d.ddr===5&&d.gb>=r.gb;
+}
+
 function status(kind){
   const x=build[kind];
   if(!x) return "open";
+  if(job.bonus){
+    if(kind==="ram"&&DS[x.id].ddr!==5) return "bad";
+    if(!erfuellt(kind,x)) return "weak";
+    const best=sichtbar(kind).filter(y=>erfuellt(kind,y)).sort((a,b)=>a.p-b.p)[0];
+    return best.id===x.id?"ok":"over";
+  }
   const v=wert(kind,x), n=job.need[kind];
   return v<n?"weak":v>n?"over":"ok";
 }
 
 const TXT = {
+  bad:"passt nicht zum Grundpaket",
   weak:"zu schwach – GTA 6 läuft so nicht wie gewünscht",
   over:"zu stark – kostet mehr Geld und Strom als nötig",
   ok:"passt genau zum Bedarf",
@@ -410,7 +458,7 @@ function renderBasis(){
 function renderSlots(){
   $("#slots").innerHTML=KINDS.map(k=>{
     const sel=build[k.key], open=openSlot===k.key, tag="";
-    const list=PARTS[k.key].map(x=>`
+    const list=sichtbar(k.key).map(x=>`
       <div class="optrow">
         <button class="opt" data-kind="${k.key}" data-id="${x.id}" aria-pressed="${!!(sel&&sel.id===x.id)}">
           <span><span class="opt-name">${x.n}</span><span class="opt-spec">${x.s}</span></span>
@@ -453,12 +501,15 @@ function abnahme(){
     verdict=`Der PC kann so noch nicht an den Kunden raus. Lest die Hinweise und versucht es noch einmal.`;
     if(!a.budgetOk) findings.push({cls:"st-bad",m:"✗",h:"Budget",
       p:"Der PC ist zu teuer für das Budget des Kunden."});
+    if(a.falsch.some(k=>a.st[k.key]==="bad")) findings.push({cls:"st-bad",m:"✗",h:"Passt nicht",
+      p:"Mindestens ein Bauteil passt nicht zum Grundpaket. Schaut euch das Mainboard noch einmal genau an."});
     if(a.falsch.some(k=>a.st[k.key]==="weak")) findings.push({cls:"st-weak",m:"✗",h:"Zu wenig Leistung",
       p:"Mindestens ein Bauteil reicht für GTA 6 nicht aus. Vergleicht eure Auswahl noch einmal mit den Systemanforderungen."});
     if(a.falsch.some(k=>a.st[k.key]==="over")) findings.push({cls:"st-over",m:"!",h:"Verschwendung",
       p:"Orientiert euch an den Anforderungen des Kunden und verzichtet auf unnötige Ausgaben. Mehr Leistung als nötig kostet nur Geld und Strom."});
     if(a.falsch.some(k=>k.key==="cpu"||k.key==="gpu")) findings.push({cls:"st-over",m:"?",h:"Datenblätter prüfen",
       p:"Schaut euch die Datenblätter der Prozessoren und Grafikkarten noch einmal genau an: Wie viele Kerne und Threads hat der Prozessor? Wie viel VRAM hat die Grafikkarte?"});
+    if(job.tipp) findings.push({cls:"st-over",m:"?",h:"Tipp",p:job.tipp});
   }
   $("#result").className="result show";
   $("#result").innerHTML=`
