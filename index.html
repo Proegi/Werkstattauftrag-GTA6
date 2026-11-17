@@ -85,6 +85,7 @@ table.rw tr.hl td:first-child{box-shadow:inset 4px 0 0 var(--pink);padding-left:
 .sysreq ul{list-style:none;margin:0;padding:0}
 .sysreq li{font-size:13.5px;padding:3px 0;line-height:1.4}
 .sysreq li b{font-weight:700}
+.sysreq a.steam{font-family:var(--mono);font-weight:700;color:var(--pink)}
 .basis{list-style:none;margin:0;padding:0}
 .basis li{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px dotted var(--line);font-size:14px}
 .basis li:last-child{border-bottom:0;font-weight:700}
@@ -222,10 +223,10 @@ table.rw tr.hl td:first-child{box-shadow:inset 4px 0 0 var(--pink);padding-left:
   </header>
 
   <details class="card block fold" open>
-    <summary><h2><span>Grand Theft Auto VI &ndash; Systemanforderungen</span><span class="fold-ic" aria-hidden="true"></span></h2></summary>
+    <summary><h2><span id="sysreqtitle">Grand Theft Auto VI &ndash; Systemanforderungen</span><span class="fold-ic" aria-hidden="true"></span></h2></summary>
     <div class="body">
       <div class="sysreq" id="sysreq"></div>
-      <p class="small">Die offiziellen PC-Anforderungen sind noch nicht ver&ouml;ffentlicht. Diese Angaben sind angenommen und im Stil einer Shop-Seite dargestellt.</p>
+      <p class="small" id="sysreqnote">Die offiziellen PC-Anforderungen sind noch nicht ver&ouml;ffentlicht. Diese Angaben sind angenommen und im Stil einer Shop-Seite dargestellt.</p>
     </div>
   </details>
 
@@ -234,7 +235,7 @@ table.rw tr.hl td:first-child{box-shadow:inset 4px 0 0 var(--pink);padding-left:
     <div class="body">
       <h3 class="sub">Grundpaket (schon vorhanden)</h3>
       <ul class="basis" id="basis"></ul>
-      <p class="small">Mainboard, Netzteil, K&uuml;hler und Geh&auml;use passen zu jedem Bauteil aus der Auswahl.</p>
+      <p class="small" id="basisnote">Mainboard, Netzteil, K&uuml;hler und Geh&auml;use passen zu jedem Bauteil aus der Auswahl.</p>
       <div class="pick-head">
         <h3>Eure Auswahl</h3>
         <p>W&auml;hlt hier Prozessor, Grafikkarte und Arbeitsspeicher aus.</p>
@@ -300,17 +301,21 @@ const PARTS = {
   {id:"c3", n:"Intel Core i7-12700F", k:3, s:"Sockel LGA1700 · bis 4,9 GHz · 25 MB Cache", w:65,  p:250,
    url:"https://www.intel.de/content/www/de/de/products/sku/134592/intel-core-i712700f-processor-25m-cache-up-to-4-90-ghz/specifications.html"},
   {id:"c4", n:"Intel Core i9-14900K", k:4, s:"Sockel LGA1700 · bis 6,0 GHz · 36 MB Cache", w:253, p:445,
-   url:"https://www.intel.de/content/www/de/de/products/sku/236773/intel-core-i9-processor-14900k-36m-cache-up-to-6-00-ghz/specifications.html"}
+   url:"https://www.intel.de/content/www/de/de/products/sku/236773/intel-core-i9-processor-14900k-36m-cache-up-to-6-00-ghz/specifications.html"},
+  {id:"c7", n:"AMD Ryzen 7 7800X3D", s:"Sockel AM5 · bis 5,0 GHz · 96 MB L3-Cache", w:120, p:390, bonus:true}
  ],
  gpu:[
   {id:"g0", n:"Intel Arc A380",          k:0, s:"PCIe 4.0 x8 · ca. 75 W",   w:75,  p:190,
    url:"https://www.intel.de/content/www/de/de/products/sku/227959/intel-arc-a380-graphics/specifications.html"},
   {id:"g1", n:"NVIDIA GeForce RTX 5060", k:1, s:"PCIe 5.0 x8 · ca. 145 W",  w:145, p:460,
    url:"https://www.nvidia.com/de-de/geforce/graphics-cards/compare/#compare-50"},
-  {id:"g2a", n:"NVIDIA GeForce RTX 5060 Ti 8 GB", k:1, s:"PCIe 5.0 x8 · ca. 180 W", w:180, p:520, bonus:true,
-   url:"https://www.nvidia.com/de-de/geforce/graphics-cards/compare/#compare-50"},
-  {id:"g2b", n:"NVIDIA GeForce RTX 5060 Ti 16 GB", k:3, s:"PCIe 5.0 x8 · ca. 180 W", w:180, p:820, bonus:true,
-   url:"https://www.nvidia.com/de-de/geforce/graphics-cards/compare/#compare-50"},
+  {id:"g05", n:"Intel Arc B580", s:"PCIe 4.0 x8 · ca. 190 W", w:190, p:390, bonus:true,
+   url:"https://www.intel.de/content/www/de/de/products/sku/241598/intel-arc-b580-graphics/specifications.html"},
+  /* Radeon: bewusst ohne Datenblatt-Link, VRAM recherchieren die SuS selbst */
+  {id:"ra0", n:"AMD Radeon RX 6500 XT", s:"PCIe 4.0 x4 · ca. 107 W", w:107, p:180, bonus:true},
+  {id:"ra1", n:"AMD Radeon RX 7600",    s:"PCIe 4.0 x8 · ca. 165 W", w:165, p:320, bonus:true},
+  {id:"ra2", n:"AMD Radeon RX 7600 XT", s:"PCIe 4.0 x8 · ca. 190 W", w:190, p:400, bonus:true},
+  {id:"ra3", n:"AMD Radeon RX 9070",    s:"PCIe 5.0 x16 · ca. 220 W", w:220, p:760, bonus:true},
   {id:"g3", n:"NVIDIA GeForce RTX 5070", k:3, s:"PCIe 5.0 x16 · ca. 250 W", w:250, p:870,
    url:"https://www.nvidia.com/de-de/geforce/graphics-cards/compare/#compare-50"},
   {id:"g4", n:"NVIDIA GeForce RTX 5080", k:4, s:"PCIe 5.0 x16 · ca. 360 W", w:360, p:1800,
@@ -327,10 +332,13 @@ const PARTS = {
 
 /* Werte aus den Herstellerdatenblättern, nur für die Auswertung der Bonusaufträge (wird nicht angezeigt) */
 const DS = {
-  c0:{kerne:4,threads:8,igpu:false},   c1:{kerne:6,threads:12,igpu:true},  c1f:{kerne:6,threads:12,igpu:false},
-  c2:{kerne:10,threads:16,igpu:false}, c3:{kerne:12,threads:20,igpu:false}, c4:{kerne:24,threads:32,igpu:true},
-  g0:{vram:6}, g1:{vram:8}, g2a:{vram:8}, g2b:{vram:16}, g3:{vram:12}, g4:{vram:16},
-  r8:{gb:8,ddr:5}, r16:{gb:16,ddr:5}, r16d4:{gb:16,ddr:4}, r32:{gb:32,ddr:5}, r64:{gb:64,ddr:5}
+  c0:{kerne:4,threads:8},   c1:{kerne:6,threads:12},  c1f:{kerne:6,threads:12},
+  c2:{kerne:10,threads:16}, c3:{kerne:12,threads:20}, c4:{kerne:24,threads:32},
+  c7:{kerne:8,threads:16,passt:false},                       /* Sockel AM5 passt nicht ins LGA1700-Mainboard */
+  g0:{vram:6}, g05:{vram:12}, g1:{vram:8}, g3:{vram:12}, g4:{vram:16},
+  ra0:{vram:4}, ra1:{vram:8}, ra2:{vram:16}, ra3:{vram:16},
+  r8:{gb:8}, r16:{gb:16}, r16d4:{gb:16,passt:false},          /* DDR4 passt nicht ins DDR5-Mainboard */
+  r32:{gb:32}, r64:{gb:64}
 };
 
 const BASIS = {
@@ -357,19 +365,26 @@ const JOBS = [
  kunde:"Eine Streamerin will am Release-Tag der PC-Version live gehen. Ihre Zuschauer sollen GTA 6 in schöner Grafik auf ihrem WQHD-Monitor sehen. Sie hat mehr Geld zur Verfügung, will aber nichts bezahlen, was sie nicht braucht.",
  need:{cpu:3,gpu:3,ram:32}
 },
-/* Bonusaufträge: zusätzliche Bauteile (bonus:true) werden nur hier angezeigt.
-   Richtig ist je Bauteilart das günstigste Bauteil, das alle Anforderungen (req) erfüllt. */
+/* Bonusaufträge: anderes Spiel, Anforderungen von der Steam-Seite, eigene Bauteilauswahl (teile).
+   req = Kerne/Threads des schwächsten bei Steam genannten Prozessors, VRAM der schwächsten genannten Grafikkarte.
+   Richtig ist je Bauteilart das günstigste Bauteil, das req erfüllt und ins Grundpaket passt. */
 {
- no:"BONUS-1", title:"Erst mal ohne Grafikkarte", budget:1350, hilfe:1, set:0, liste:false, bonus:true,
- kunde:"Jonas (17) will GTA 6 spielen, sobald die PC-Version erscheint – niedrige Einstellungen reichen ihm. Die Grafikkarte ist bestellt, kommt aber erst in drei Wochen. Bis dahin will er den PC schon für die Schule nutzen: Texte schreiben, recherchieren, Videos schauen. Er will so wenig wie möglich ausgeben.",
- req:{kerne:6,threads:12,igpu:true,vram:8,gb:16},
- tipp:"Lest den Kundentext noch einmal genau: Was muss der PC können, solange die Grafikkarte noch fehlt?"
+ no:"BONUS-1", title:"Avatar: Frontiers of Pandora", budget:1300, hilfe:1, set:1, liste:false, bonus:true,
+ spiel:"Avatar: Frontiers of Pandora", stufe:"Empfohlen (Steam)",
+ steam:"https://store.steampowered.com/app/2840770/Avatar_Frontiers_of_Pandora/?l=german",
+ kunde:"Lina (18) hat sich Avatar: Frontiers of Pandora gekauft und will es in hohen Einstellungen spielen – also mit den empfohlenen Anforderungen. GTA 6 interessiert sie nicht. Ihr Budget ist fest, und sie will keinen Euro mehr ausgeben als nötig.",
+ req:{kerne:6,threads:12,vram:8,gb:16},
+ teile:{cpu:["c0","c1f","c2","c3"], gpu:["g0","g05","g1","g3"], ram:["r8","r16d4","r16","r32"]},
+ tipp:"Bei Steam stehen nur Modellnamen. Schlagt nach, wie viele Kerne/Threads und wie viel VRAM die dort genannten Bauteile haben – ein großer Name heißt nicht automatisch mehr Leistung. Steht dort „oder“, reicht eines der genannten Bauteile."
 },
 {
- no:"BONUS-2", title:"WQHD für wenig Geld", budget:1900, hilfe:1, set:1, liste:false, bonus:true,
- kunde:"Ein Streamer will GTA 6 in hohen Einstellungen auf seinem WQHD-Monitor spielen. Sein Budget ist deutlich knapper als bei ViceCityVibes. Er meint: „Ein i5 ist für die empfohlenen Anforderungen doch sicher zu schwach, oder?“ Er will keinen Euro mehr ausgeben als nötig.",
- req:{kerne:8,threads:16,igpu:false,vram:12,gb:32},
- tipp:"Der Name eines Bauteils verrät nicht, was es kann. Entscheidend sind die Werte im Datenblatt."
+ no:"BONUS-2", title:"Cyberpunk 2077 mit Radeon", budget:1350, hilfe:1, set:1, liste:false, bonus:true, radeon:true,
+ spiel:"Cyberpunk 2077", stufe:"Empfohlen (Steam)",
+ steam:"https://store.steampowered.com/app/1091500/Cyberpunk_2077/?l=german",
+ kunde:"Deniz (20) will Cyberpunk 2077 endlich in hohen Einstellungen spielen – mit den empfohlenen Anforderungen. Er ist großer AMD-Fan und will unbedingt eine Radeon-Grafikkarte. Bezahlen will er nur, was er wirklich braucht.",
+ req:{kerne:8,threads:16,vram:8,gb:16},
+ teile:{cpu:["c1f","c3","c7","c4"], gpu:["ra0","ra1","ra2","ra3"], ram:["r8","r16","r32"]},
+ tipp:"Für die Radeon-Karten gibt es keinen Datenblatt-Link: Recherchiert den VRAM selbst. Prüft außerdem, ob jedes Bauteil wirklich zum Grundpaket passt."
 }
 ];
 
@@ -397,21 +412,25 @@ function ideal(){
   return b;
 }
 
-function sichtbar(kind){return PARTS[kind].filter(x=>!x.bonus||job.bonus);}
+function sichtbar(kind){
+  if(job.teile) return job.teile[kind].map(id=>PARTS[kind].find(x=>x.id===id));
+  return PARTS[kind].filter(x=>!x.bonus);
+}
 
-/* Bonus: erfüllt das Bauteil die Anforderungen? "bad" = passt nicht zum Grundpaket (DDR5-Mainboard) */
+/* Bonus: erfüllt das Bauteil die Anforderungen? "bad" = passt nicht zum Grundpaket (Sockel LGA1700, DDR5) */
 function erfuellt(kind,x){
   const d=DS[x.id], r=job.req;
-  if(kind==="cpu") return d.kerne>=r.kerne&&d.threads>=r.threads&&(!r.igpu||d.igpu);
+  if(d.passt===false) return false;
+  if(kind==="cpu") return d.kerne>=r.kerne&&d.threads>=r.threads;
   if(kind==="gpu") return d.vram>=r.vram;
-  return d.ddr===5&&d.gb>=r.gb;
+  return d.gb>=r.gb;
 }
 
 function status(kind){
   const x=build[kind];
   if(!x) return "open";
   if(job.bonus){
-    if(kind==="ram"&&DS[x.id].ddr!==5) return "bad";
+    if(DS[x.id].passt===false) return "bad";
     if(!erfuellt(kind,x)) return "weak";
     const best=sichtbar(kind).filter(y=>erfuellt(kind,y)).sort((a,b)=>a.p-b.p)[0];
     return best.id===x.id?"ok":"over";
@@ -431,13 +450,30 @@ const TXT = {
 /* ============================================================
    ANZEIGE
    ============================================================ */
+function anf(){return job.stufe||SETTINGS[job.set].n;}
+
 function renderJob(){
   $("#jobno").textContent="Auftrag "+job.no;
   $("#jobtitle").textContent=job.title;
   $("#jobtext").textContent=job.kunde;
+  $("#basisnote").textContent=job.bonus
+    ?"Achtung: In den Bonusaufträgen passt nicht jedes Bauteil aus der Auswahl zum Grundpaket."
+    :"Mainboard, Netzteil, Kühler und Gehäuse passen zu jedem Bauteil aus der Auswahl.";
   $("#jobmeta").innerHTML=`
     <div><dt>Budget</dt><dd>${euro(job.budget)}</dd></div>
-    <div><dt>Anforderung</dt><dd>${SETTINGS[job.set].n}</dd></div>`;
+    <div><dt>Anforderung</dt><dd>${anf()}</dd></div>`;
+  if(job.steam){
+    $("#jobreqs").innerHTML=`<li><div>Bonus: Diesmal gibt es keine fertige Liste. Sucht die Systemanforderungen von <b>${job.spiel}</b> selbst auf der Steam-Seite heraus. Dort stehen nur Modellnamen:
+      <ul class="bullets"><li>Wie viele Kerne/Threads haben die genannten Prozessoren &ndash; und eure?</li><li>Wie viel VRAM haben die genannten Grafikkarten &ndash; und eure?</li></ul>
+      Steht bei Steam &bdquo;oder&ldquo;, reicht eines der genannten Bauteile.${job.radeon?` <b>Für die Radeon-Grafikkarten gibt es keinen Datenblatt-Link &ndash; den VRAM müsst ihr selbst recherchieren.</b>`:""}</div></li>`;
+    $("#sysreqtitle").textContent=job.spiel+" – Systemanforderungen";
+    $("#sysreqnote").textContent="Die Anforderungen stehen auf der Steam-Seite ganz unten im Abschnitt „Systemanforderungen“.";
+    $("#sysreq").innerHTML=`<div class="col"><h3>${anf()}:</h3><p class="pre">Selbst herausfinden</p>
+      <ul><li><a class="steam" href="${job.steam}" target="_blank" rel="noopener">Steam-Seite von ${job.spiel} öffnen &#8599;</a></li></ul></div>`;
+    return;
+  }
+  $("#sysreqtitle").textContent="Grand Theft Auto VI – Systemanforderungen";
+  $("#sysreqnote").textContent="Die offiziellen PC-Anforderungen sind noch nicht veröffentlicht. Diese Angaben sind angenommen und im Stil einer Shop-Seite dargestellt.";
   $("#jobreqs").innerHTML=`<li><div>Vergleicht die Systemanforderungen mit euren Bauteilen:
     <ul class="bullets"><li>Wie viele Kerne/Threads hat der Prozessor?</li><li>Wie viel VRAM (Intel: &bdquo;Dedizierter Speicher mit hoher Bandbreite&ldquo;, NVIDIA: &bdquo;Standard-Speicherkonfiguration&ldquo;) hat die Grafikkarte?</li></ul>
     Die Daten findet ihr im jeweiligen Datenblatt auf der rechten Seite des jeweiligen Bauteils.</div></li>`;
@@ -502,9 +538,9 @@ function abnahme(){
     if(!a.budgetOk) findings.push({cls:"st-bad",m:"✗",h:"Budget",
       p:"Der PC ist zu teuer für das Budget des Kunden."});
     if(a.falsch.some(k=>a.st[k.key]==="bad")) findings.push({cls:"st-bad",m:"✗",h:"Passt nicht",
-      p:"Mindestens ein Bauteil passt nicht zum Grundpaket. Schaut euch das Mainboard noch einmal genau an."});
+      p:"Mindestens ein Bauteil passt nicht zum Grundpaket. Schaut euch das Mainboard (Sockel und Speichertyp) noch einmal genau an."});
     if(a.falsch.some(k=>a.st[k.key]==="weak")) findings.push({cls:"st-weak",m:"✗",h:"Zu wenig Leistung",
-      p:"Mindestens ein Bauteil reicht für GTA 6 nicht aus. Vergleicht eure Auswahl noch einmal mit den Systemanforderungen."});
+      p:`Mindestens ein Bauteil reicht für ${job.spiel||"GTA 6"} nicht aus. Vergleicht eure Auswahl noch einmal mit den Systemanforderungen.`});
     if(a.falsch.some(k=>a.st[k.key]==="over")) findings.push({cls:"st-over",m:"!",h:"Verschwendung",
       p:"Orientiert euch an den Anforderungen des Kunden und verzichtet auf unnötige Ausgaben. Mehr Leistung als nötig kostet nur Geld und Strom."});
     if(a.falsch.some(k=>k.key==="cpu"||k.key==="gpu")) findings.push({cls:"st-over",m:"?",h:"Datenblätter prüfen",
@@ -545,7 +581,7 @@ function buildPrint(){
   }).join("")+`<tr><td>Grundpaket</td><td>Mainboard, SSD, Netzteil, Kühler, Gehäuse</td><td class="r">${euro(BASIS.p)}</td></tr>`;
   $("#printview").innerHTML=`
     <h1>${job.title}</h1>
-    <p class="pmeta">Werkstattauftrag ${job.no} · ${SETTINGS[job.set].n} · Budget ${euro(job.budget)} · ${heute}</p>
+    <p class="pmeta">Werkstattauftrag ${job.no} · ${anf()} · Budget ${euro(job.budget)} · ${heute}</p>
     <p>${job.kunde}</p>
     <h2>Gewählte Bauteile</h2>
     <table>
