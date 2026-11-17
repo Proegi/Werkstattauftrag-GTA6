@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Werkstattauftrag GTA 6</title>
+<style>
+/* Palette: drei Farben aus dem GTA-6-Cover + Neutraltöne */
+:root{
+  --night:#1E0E33;
+  --pink:#D62B70;
+  --orange:#FF7A35;
+  --paper:#F7F5F8;
+  --card:#FFFFFF;
+  --soft:#F1EEF3;
+  --ink-2:#4F4560;
+  --ink-3:#857C92;
+  --line:#DCD7E1;
+  --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono","Roboto Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--night);font-family:var(--sans);font-size:16px;line-height:1.5;padding:24px 16px 64px}
+.sheet{max-width:1100px;margin:0 auto}
+
+/* Kopf */
+.head{background:var(--card);border:2px solid var(--night)}
+.head-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:10px 18px;background:var(--night);color:#fff}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.eyebrow b{color:var(--orange)}
+.switcher{display:flex;gap:8px;align-items:center}
+label.sw{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+select{font-family:var(--mono);font-size:13px;background:#fff;color:var(--night);border:0;padding:6px 8px;max-width:100%}
+.intro{padding:12px 18px;font-size:14.5px;color:var(--ink-2);border-bottom:1px solid var(--line);background:var(--soft)}
+.head-body{padding:20px 18px 18px}
+.jobno{font-family:var(--mono);font-size:13px;letter-spacing:.1em;color:var(--pink);font-weight:700}
+h1{font-family:var(--mono);font-weight:800;text-transform:uppercase;font-size:clamp(22px,3.6vw,32px);line-height:1.1;margin:4px 0 10px}
+.customer{color:var(--ink-2);max-width:70ch;margin:0 0 18px}
+.meta{display:flex;flex-wrap:wrap;margin:0;border-top:1px solid var(--line)}
+.meta div{padding:10px 22px 10px 0;margin-right:22px;border-right:1px solid var(--line)}
+.meta div:last-child{border-right:0}
+.meta dt{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.meta dd{font-family:var(--mono);font-size:18px;margin:2px 0 0;font-weight:700}
+.reqs{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:6px}
+.reqs li{display:flex;gap:10px;align-items:baseline}
+.reqs li::before{content:"\25B8";color:var(--pink)}
+.reqs ul.bullets{list-style:disc;margin:4px 0 4px 20px;padding:0}
+.reqs ul.bullets li{display:list-item}
+.reqs ul.bullets li::before{content:none}
+
+/* Karten */
+.info{display:grid;grid-template-columns:1.3fr 1fr;gap:22px;margin-top:22px}
+@media(max-width:900px){.info{grid-template-columns:1fr}}
+.card,.pane,.slot{background:var(--card);border:2px solid var(--night)}
+.card h2,.pane h2{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin:0;padding:9px 14px;background:var(--night);color:#fff;font-weight:700;display:flex;justify-content:space-between;gap:8px}
+.card .body{padding:12px 14px}
+table.rw{width:100%;border-collapse:collapse;font-size:15px}
+table.rw th{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;text-align:left;color:var(--ink-3);border-bottom:2px solid var(--night);padding:6px 8px 6px 0}
+table.rw td{padding:9px 8px 9px 0;border-bottom:1px solid var(--line)}
+table.rw td:first-child{font-weight:700}
+table.rw tr.hl td{background:var(--soft)}
+table.rw tr.hl td:first-child{box-shadow:inset 4px 0 0 var(--pink);padding-left:8px}
+.small{font-size:12.5px;color:var(--ink-2);margin:10px 0 0}
+.block{margin-top:22px}
+.sysreq{display:grid;gap:14px}
+.sysreq .col{padding:10px 12px;border:1px solid var(--line)}
+.sub{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:6px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--night)}
+.pc .sub:not(:first-child){margin-top:22px}
+.pc .slot{border:1px solid var(--line);margin-bottom:10px}
+.pc .actions{margin-top:14px}
+.next{padding:0 20px 20px}
+.pick-head{margin:28px -14px 14px;padding:12px 14px;background:var(--pink);color:#fff}
+.pick-head h3{font-family:var(--mono);font-size:18px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;margin:0}
+.pick-head p{margin:2px 0 0;font-size:14px}
+.fold summary{list-style:none;cursor:pointer}
+.fold summary::-webkit-details-marker{display:none}
+.fold summary h2{align-items:center}
+.fold summary:hover h2{background:var(--ink-2)}
+.fold summary:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+.fold-ic::after{content:"\25BC  einklappen";font-size:11px;letter-spacing:.1em}
+.fold:not([open]) .fold-ic::after{content:"\25B6  ausklappen"}
+.sysreq h3{font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}
+.sysreq .pre{font-size:12.5px;color:var(--ink-2);margin:0 0 6px}
+.sysreq ul{list-style:none;margin:0;padding:0}
+.sysreq li{font-size:13.5px;padding:3px 0;line-height:1.4}
+.sysreq li b{font-weight:700}
+.basis{list-style:none;margin:0;padding:0}
+.basis li{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px dotted var(--line);font-size:14px}
+.basis li:last-child{border-bottom:0;font-weight:700}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* Auswahl (zugeklappt) */
+.cols{margin-top:22px}
+.actions{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:4px}
+@media(max-width:620px){.actions{grid-template-columns:1fr}}
+.actions .btn.ghost,.result .btn.ghost{margin-top:0}
+.retry{padding:0 20px 20px}
+.slot{margin-bottom:12px}
+.slot-btn{display:grid;grid-template-columns:150px 1fr auto;gap:14px;align-items:center;width:100%;background:none;border:0;padding:13px 14px;text-align:left;cursor:pointer;font:inherit;color:inherit}
+@media(max-width:620px){.slot-btn{grid-template-columns:1fr auto}.slot-kind{grid-column:1/-1}}
+.slot-btn:hover{background:var(--soft)}
+.slot-btn:focus-visible,.opt:focus-visible{outline:3px solid var(--pink);outline-offset:-3px}
+.slot-kind{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.slot-pick.empty{color:var(--ink-3);font-style:italic}
+.slot-pick b{display:block}
+.slot-spec{font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+.slot-right{display:flex;gap:10px;align-items:center;font-family:var(--mono)}
+.arrow{font-size:12px;color:var(--ink-3)}
+.parts{display:none;border-top:1px dashed var(--line)}
+.slot.open .parts{display:block}
+.opt{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:10px 14px;text-align:left;cursor:pointer;font:inherit;color:inherit}
+.optrow{display:grid;grid-template-columns:1fr auto;align-items:stretch;border-bottom:1px solid var(--line)}
+.optrow:last-child{border-bottom:0}
+.optrow .opt{border-bottom:0}
+.ds{display:flex;align-items:center;padding:0 14px;font-family:var(--mono);font-size:12px;font-weight:700;color:var(--pink);text-decoration:none;border-left:1px dashed var(--line);white-space:nowrap}
+.ds:hover{background:var(--soft);text-decoration:underline}
+.ds:focus-visible{outline:3px solid var(--pink);outline-offset:-3px}
+@media(max-width:620px){.optrow{grid-template-columns:1fr}.ds{border-left:0;padding:0 14px 10px}}
+.opt:hover{background:var(--soft)}
+.opt[aria-pressed="true"]{background:var(--soft);box-shadow:inset 5px 0 0 var(--pink)}
+@media(max-width:620px){.opt{grid-template-columns:1fr auto}.klasse{grid-column:1/-1;justify-self:start}}
+.klasse{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:3px 6px;text-align:center;border:1.5px solid var(--night)}
+.opt-name{font-weight:700}
+.opt-spec{display:block;font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+.opt-price{font-family:var(--mono);font-weight:700}
+.tag{font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 7px;border:1.5px solid var(--night)}
+.tag.ok{background:var(--night);color:#fff}
+.tag.weak{background:var(--pink);border-color:var(--pink);color:#fff}
+.tag.over{background:var(--orange);border-color:var(--orange);color:var(--night)}
+
+/* Prüfprotokoll */
+.pane{position:sticky;top:16px}
+@media(max-width:900px){.pane{position:static}}
+.pane section{padding:14px;border-bottom:1px solid var(--line)}
+.stufe{color:var(--orange)}
+.gauge{margin-bottom:14px}
+.gauge:last-child{margin-bottom:0}
+.gauge-top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.gauge-val{font-family:var(--mono);font-size:17px;font-weight:700}
+.gauge-sub{font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+.bar{height:10px;background:var(--soft);border:1px solid var(--line);margin-top:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--night);transition:width .25s ease}
+.bar.over i{background:var(--pink)}
+.checks{list-style:none;margin:0;padding:0}
+.checks li{display:grid;grid-template-columns:18px 1fr;gap:9px;padding:6px 0;font-size:14px;border-bottom:1px dotted var(--line)}
+.checks li:last-child{border-bottom:0}
+.mark{font-family:var(--mono);font-weight:700;text-align:center}
+.note{display:block;font-family:var(--mono);font-size:11.5px;margin-top:2px;color:var(--ink-2)}
+.st-weak .mark,.st-weak .note,.st-bad .mark{color:var(--pink)}
+.st-over .mark{color:var(--orange)}
+.st-open{color:var(--ink-3)}
+.pane-foot{padding:14px}
+.btn{font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;width:100%;padding:12px;background:var(--pink);color:#fff;border:2px solid var(--pink);cursor:pointer}
+.btn:hover{background:var(--night);border-color:var(--night)}
+.btn:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.btn.ghost{background:#fff;color:var(--night);border-color:var(--night);margin-top:8px}
+.btn.ghost:hover{background:var(--soft)}
+
+/* Abnahme */
+.result{margin-top:22px;background:var(--card);border:2px solid var(--night);display:none}
+.result.show{display:block}
+.result-head{display:flex;flex-wrap:wrap;gap:18px;align-items:center;padding:20px;border-bottom:1px solid var(--line)}
+.stamp{font-family:var(--mono);font-weight:800;font-size:clamp(20px,3vw,28px);letter-spacing:.06em;text-transform:uppercase;border:4px double currentColor;padding:8px 18px;transform:rotate(-4deg);animation:slam .32s cubic-bezier(.2,1.5,.4,1) both}
+.stamp.pass{color:var(--night)} .stamp.fail{color:var(--pink)}
+@keyframes slam{from{transform:rotate(-4deg) scale(1.7);opacity:0}to{transform:rotate(-4deg) scale(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){.stamp{animation:none}.bar i{transition:none}}
+.verdict{font-size:15px;color:var(--ink-2);max-width:60ch;margin:0}
+.verdict b{color:var(--night)}
+.findings{list-style:none;margin:0;padding:20px;display:grid;gap:12px}
+.finding{display:grid;grid-template-columns:22px 1fr;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.finding:last-child{border-bottom:0;padding-bottom:0}
+.finding h3{font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin:0 0 3px}
+.finding p{margin:0;color:var(--ink-2);font-size:14.5px}
+.foot{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:center;margin-top:26px;line-height:1.8}
+
+/* Druck */
+#printview{display:none}
+@media print{
+  @page{size:A4;margin:14mm}
+  body{background:#fff;padding:0;font-size:11pt}
+  .sheet>*{display:none!important}
+  .sheet>#printview{display:block!important}
+  #printview h1{font-size:16pt;margin:0 0 2mm}
+  #printview .pmeta{font-family:var(--mono);font-size:9pt;margin:0 0 4mm}
+  #printview p{font-size:10pt}
+  #printview table{width:100%;border-collapse:collapse;margin-bottom:5mm}
+  #printview th{font-family:var(--mono);font-size:8pt;text-transform:uppercase;text-align:left;border-bottom:1.2pt solid #000;padding:1.5mm 2mm 1.5mm 0}
+  #printview td{border-bottom:.4pt solid #999;padding:1.8mm 2mm 1.8mm 0;font-size:10pt}
+  #printview td.r{text-align:right;font-family:var(--mono)}
+  #printview tfoot td{border-top:1.2pt solid #000;border-bottom:0;font-weight:700}
+  #printview h2{font-family:var(--mono);font-size:9pt;letter-spacing:.12em;text-transform:uppercase;margin:0 0 2mm;padding-bottom:1mm;border-bottom:.6pt solid #000}
+  #printview ul{list-style:none;margin:0 0 5mm;padding:0}
+  #printview li{font-size:10pt;padding:1mm 0;border-bottom:.3pt dotted #aaa}
+  #printview .pstamp{border:2.5pt double #000;display:inline-block;padding:2mm 6mm;font-family:var(--mono);font-weight:700;font-size:13pt;text-transform:uppercase;margin-bottom:4mm}
+  #printview .sign{margin-top:9mm;display:flex;gap:12mm;font-family:var(--mono);font-size:9pt}
+  #printview .sign div{border-top:.6pt solid #000;padding-top:1.5mm;flex:1}
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="head">
+    <div class="head-bar">
+      <span class="eyebrow">Werkstattauftrag &middot; HBF IT &middot; <b>GTA 6</b> Release-Tag</span>
+      <div class="switcher">
+        <label class="sw" for="jobsel">Auftrag</label>
+        <select id="jobsel" autocomplete="off"></select>
+      </div>
+    </div>
+    <div class="intro">
+      Heute erscheint GTA 6 &ndash; zuerst nur f&uuml;r PlayStation 5 und Xbox Series X|S. Viele Kunden wollen trotzdem schon jetzt einen PC, der f&uuml;r die PC-Version bereit ist. Ihr w&auml;hlt <b>nur Prozessor, Grafikkarte und Arbeitsspeicher</b> &ndash; der Rest ist schon fertig.
+    </div>
+    <div class="head-body">
+      <div class="jobno" id="jobno"></div>
+      <h1 id="jobtitle"></h1>
+      <p class="customer" id="jobtext"></p>
+      <dl class="meta" id="jobmeta"></dl>
+      <ul class="reqs" id="jobreqs"></ul>
+    </div>
+  </header>
+
+  <details class="card block fold" open>
+    <summary><h2><span>Grand Theft Auto VI &ndash; Systemanforderungen</span><span class="fold-ic" aria-hidden="true"></span></h2></summary>
+    <div class="body">
+      <div class="sysreq" id="sysreq"></div>
+      <p class="small">Die offiziellen PC-Anforderungen sind noch nicht ver&ouml;ffentlicht. Diese Angaben sind angenommen und im Stil einer Shop-Seite dargestellt.</p>
+    </div>
+  </details>
+
+  <div class="card block pc">
+    <h2><span>Euer PC f&uuml;r diesen Auftrag</span></h2>
+    <div class="body">
+      <h3 class="sub">Grundpaket (schon vorhanden)</h3>
+      <ul class="basis" id="basis"></ul>
+      <p class="small">Mainboard, Netzteil, K&uuml;hler und Geh&auml;use passen zu jedem Bauteil aus der Auswahl.</p>
+      <div class="pick-head">
+        <h3>Eure Auswahl</h3>
+        <p>W&auml;hlt hier Prozessor, Grafikkarte und Arbeitsspeicher aus.</p>
+      </div>
+      <div id="slots"></div>
+      <div class="actions">
+        <button class="btn" id="abnahme">Abnahme pr&uuml;fen</button>
+        <button class="btn ghost" id="pdf">Als PDF speichern</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="result" id="result"></div>
+  <div id="printview"></div>
+
+  <p class="foot">Alle Preise und Systemanforderungen sind Beispieldaten f&uuml;r den Unterricht.</p>
+</div>
+
+<script>
+/* ============================================================
+   DATEN
+   ============================================================ */
+/* Systemanforderungen im Stil einer Steam-Shopseite (angenommen) */
+const SETTINGS = [
+  {n:"Mindestanforderungen", rows:[
+    ["Betriebssystem","Windows 10/11 64-Bit"],
+    ["Prozessor","6 Kerne / 12 Threads"],
+    ["Arbeitsspeicher","16 GB RAM"],
+    ["Grafik","8 GB VRAM"],
+    ["DirectX","Version 12"],
+    ["Speicherplatz","150 GB verfügbar, SSD erforderlich"],
+    ["Zusätzliche Anmerkungen","1080p, 30 FPS, niedrige Einstellungen"]
+  ]},
+  {n:"Empfohlen", rows:[
+    ["Betriebssystem","Windows 11 64-Bit"],
+    ["Prozessor","8 Kerne / 16 Threads"],
+    ["Arbeitsspeicher","32 GB RAM"],
+    ["Grafik","12 GB VRAM"],
+    ["DirectX","Version 12"],
+    ["Speicherplatz","150 GB verfügbar, SSD erforderlich"],
+    ["Zusätzliche Anmerkungen","1440p, 60 FPS, hohe Einstellungen"]
+  ]}
+];
+
+const KINDS = [
+  {key:"cpu", label:"Prozessor"},
+  {key:"gpu", label:"Grafikkarte"},
+  {key:"ram", label:"Arbeitsspeicher"}
+];
+
+const PARTS = {
+ /* k = interne Leistungsstufe für die Auswertung (wird nicht angezeigt): 0 zu schwach, 1 Mindest, 3 Empfohlen, 4 zu viel */
+ /* Kerne/Threads und VRAM stehen bewusst NICHT hier, sondern nur im verlinkten Datenblatt */
+ cpu:[
+  {id:"c0", n:"Intel Core i3-12100F", k:0, s:"Sockel LGA1700 · bis 4,3 GHz · 12 MB Cache", w:60,  p:85,
+   url:"https://www.intel.de/content/www/de/de/products/sku/132223/intel-core-i312100f-processor-12m-cache-up-to-4-30-ghz/specifications.html"},
+  {id:"c1", n:"Intel Core i5-12400",  k:1, s:"Sockel LGA1700 · bis 4,4 GHz · 18 MB Cache", w:65,  p:165,
+   url:"https://www.intel.de/content/www/de/de/products/sku/134586/intel-core-i512400-processor-18m-cache-up-to-4-40-ghz/specifications.html"},
+  {id:"c3", n:"Intel Core i7-12700F", k:3, s:"Sockel LGA1700 · bis 4,9 GHz · 25 MB Cache", w:65,  p:250,
+   url:"https://www.intel.de/content/www/de/de/products/sku/134592/intel-core-i712700f-processor-25m-cache-up-to-4-90-ghz/specifications.html"},
+  {id:"c4", n:"Intel Core i9-14900K", k:4, s:"Sockel LGA1700 · bis 6,0 GHz · 36 MB Cache", w:253, p:445,
+   url:"https://www.intel.de/content/www/de/de/products/sku/236773/intel-core-i9-processor-14900k-36m-cache-up-to-6-00-ghz/specifications.html"}
+ ],
+ gpu:[
+  {id:"g0", n:"Intel Arc A380",          k:0, s:"PCIe 4.0 x8 · ca. 75 W",   w:75,  p:190,
+   url:"https://www.intel.de/content/www/de/de/products/sku/227959/intel-arc-a380-graphics/specifications.html"},
+  {id:"g1", n:"NVIDIA GeForce RTX 5060", k:1, s:"PCIe 5.0 x8 · ca. 145 W",  w:145, p:460,
+   url:"https://www.nvidia.com/de-de/geforce/graphics-cards/compare/#compare-50"},
+  {id:"g3", n:"NVIDIA GeForce RTX 5070", k:3, s:"PCIe 5.0 x16 · ca. 250 W", w:250, p:870,
+   url:"https://www.nvidia.com/de-de/geforce/graphics-cards/compare/#compare-50"},
+  {id:"g4", n:"NVIDIA GeForce RTX 5080", k:4, s:"PCIe 5.0 x16 · ca. 360 W", w:360, p:1800,
+   url:"https://www.nvidia.com/de-de/geforce/graphics-cards/compare/#compare-50"}
+ ],
+ ram:[
+  {id:"r8",  n:"2 × 4 GB DDR5-5600",  gb:8,  s:"Kit aus 2 Riegeln · DIMM · CL40", w:3, p:140},
+  {id:"r16", n:"2 × 8 GB DDR5-5600",  gb:16, s:"Kit aus 2 Riegeln · DIMM · CL40", w:5, p:250},
+  {id:"r32", n:"2 × 16 GB DDR5-5600", gb:32, s:"Kit aus 2 Riegeln · DIMM · CL40", w:6, p:470},
+  {id:"r64", n:"2 × 32 GB DDR5-5600", gb:64, s:"Kit aus 2 Riegeln · DIMM · CL40", w:8, p:900}
+ ]
+};
+
+const BASIS = {
+  items:[
+    ["Mainboard B760, Sockel LGA1700, DDR5",100],
+    ["SSD 1 TB NVMe",150],
+    ["Netzteil 750 W, 80 PLUS Gold",100],
+    ["CPU-Kühler",25],
+    ["Gehäuse Midi-Tower",55]
+  ],
+  w:60
+};
+BASIS.p = BASIS.items.reduce((s,x)=>s+x[1],0);
+
+/* hilfe: 2 = Hilfestufe 1 (Live-Rückmeldung), 1 = Hilfestufe 2 (Rückmeldung erst bei Abnahme) */
+const JOBS = [
+{
+ no:"GTA-01", title:"Spar-PC für Mia", budget:1400, hilfe:2, set:0, liste:true,
+ kunde:"Mia (19) ist im ersten Ausbildungsjahr und hat lange gespart. Sie will GTA 6 spielen, sobald die PC-Version kommt. Schöne Grafik ist ihr egal – Hauptsache, es läuft. Jeder Euro, den sie nicht ausgeben muss, bleibt bei ihr.",
+ need:{cpu:1,gpu:1,ram:16}
+},
+{
+ no:"GTA-02", title:"Streaming-PC für \"ViceCityVibes\"", budget:2250, hilfe:1, set:1, liste:false,
+ kunde:"Eine Streamerin will am Release-Tag der PC-Version live gehen. Ihre Zuschauer sollen GTA 6 in schöner Grafik auf ihrem WQHD-Monitor sehen. Sie hat mehr Geld zur Verfügung, will aber nichts bezahlen, was sie nicht braucht.",
+ need:{cpu:3,gpu:3,ram:32}
+}
+];
+
+/* ============================================================
+   LOGIK
+   ============================================================ */
+const $ = s=>document.querySelector(s);
+let job = JOBS[0];
+let build = {cpu:null,gpu:null,ram:null};
+let openSlot = null;
+
+function euro(n){return n.toLocaleString("de-DE")+" €";}
+function wert(kind,x){return kind==="ram"?x.gb:x.k;}
+
+function calc(b){
+  b=b||build;
+  let price=BASIS.p, watt=BASIS.w;
+  for(const k in b) if(b[k]){price+=b[k].p; watt+=b[k].w;}
+  return {price,watt,kosten:Math.round(watt*4*365/1000*0.35)};
+}
+
+function ideal(){
+  const b={};
+  KINDS.forEach(k=>{b[k.key]=PARTS[k.key].find(x=>wert(k.key,x)===job.need[k.key]);});
+  return b;
+}
+
+function status(kind){
+  const x=build[kind];
+  if(!x) return "open";
+  const v=wert(kind,x), n=job.need[kind];
+  return v<n?"weak":v>n?"over":"ok";
+}
+
+const TXT = {
+  weak:"zu schwach – GTA 6 läuft so nicht wie gewünscht",
+  over:"zu stark – kostet mehr Geld und Strom als nötig",
+  ok:"passt genau zum Bedarf",
+  open:"noch nicht gewählt"
+};
+
+/* ============================================================
+   ANZEIGE
+   ============================================================ */
+function renderJob(){
+  $("#jobno").textContent="Auftrag "+job.no;
+  $("#jobtitle").textContent=job.title;
+  $("#jobtext").textContent=job.kunde;
+  $("#jobmeta").innerHTML=`
+    <div><dt>Budget</dt><dd>${euro(job.budget)}</dd></div>
+    <div><dt>Anforderung</dt><dd>${SETTINGS[job.set].n}</dd></div>`;
+  $("#jobreqs").innerHTML=`<li><div>Vergleicht die Systemanforderungen mit euren Bauteilen:
+    <ul class="bullets"><li>Wie viele Kerne/Threads hat der Prozessor?</li><li>Wie viel VRAM (Intel: &bdquo;Dedizierter Speicher mit hoher Bandbreite&ldquo;, NVIDIA: &bdquo;Standard-Speicherkonfiguration&ldquo;) hat die Grafikkarte?</li></ul>
+    Die Daten findet ihr im jeweiligen Datenblatt auf der rechten Seite des jeweiligen Bauteils.</div></li>`;
+  $("#sysreq").innerHTML=SETTINGS.map((s,i)=>`
+    <div class="col">
+      <h3>${s.n}:</h3>
+      <p class="pre">Setzt einen 64-Bit-Prozessor und ein 64-Bit-Betriebssystem voraus</p>
+      <ul>${s.rows.map(r=>`<li><b>${r[0]}:</b> ${r[1]}</li>`).join("")}</ul>
+    </div>`).join("");
+}
+
+function renderBasis(){
+  $("#basis").innerHTML=BASIS.items.map(x=>`<li><span>${x[0]}</span><span class="num">${euro(x[1])}</span></li>`).join("")
+    +`<li><span>Summe Grundpaket</span><span class="num">${euro(BASIS.p)}</span></li>`;
+}
+
+
+function renderSlots(){
+  $("#slots").innerHTML=KINDS.map(k=>{
+    const sel=build[k.key], open=openSlot===k.key, tag="";
+    const list=PARTS[k.key].map(x=>`
+      <div class="optrow">
+        <button class="opt" data-kind="${k.key}" data-id="${x.id}" aria-pressed="${!!(sel&&sel.id===x.id)}">
+          <span><span class="opt-name">${x.n}</span><span class="opt-spec">${x.s}</span></span>
+          <span class="opt-price">${euro(x.p)}</span>
+        </button>
+        ${x.url?`<a class="ds" href="${x.url}" target="_blank" rel="noopener">Datenblatt &#8599;</a>`:""}
+      </div>`).join("");
+    return `<div class="slot ${open?"open":""}">
+      <button class="slot-btn" data-slot="${k.key}" aria-expanded="${open}">
+        <span class="slot-kind">${k.label}</span>
+        <span class="slot-pick ${sel?"":"empty"}">${sel?`<b>${sel.n}</b><span class="slot-spec">${sel.s} · ${euro(sel.p)}</span>`:"noch nicht gewählt – zum Aufklappen klicken"}</span>
+        <span class="slot-right">${tag}<span class="arrow">${open?"▲":"▼"}</span></span>
+      </button>
+      <div class="parts">${list}</div>
+    </div>`;
+  }).join("");
+}
+
+function render(){renderSlots();}
+
+/* ---- Abnahme ---- */
+function auswertung(){
+  const c=calc(), st={};
+  KINDS.forEach(k=>st[k.key]=status(k.key));
+  const alle=KINDS.every(k=>build[k.key]);
+  const budgetOk=c.price<=job.budget;
+  const falsch=KINDS.filter(k=>st[k.key]!=="ok");
+  return {c,st,alle,budgetOk,falsch,pass:alle&&budgetOk&&falsch.length===0};
+}
+
+function abnahme(){
+  const a=auswertung();
+  let verdict, findings=[];
+  if(!a.alle){
+    verdict=`Es fehlen noch Bauteile. Wählt Prozessor, Grafikkarte <b>und</b> Arbeitsspeicher aus.`;
+  }else if(a.pass){
+    verdict=`Der PC passt genau zum Bedarf des Kunden.`;
+    findings=[{cls:"st-ok",m:"✓",h:"Bedarfsgerecht und sparsam",p:"Nichts fehlt, nichts ist zu viel. So wird weder Geld noch Strom verschwendet."}];
+  }else{
+    verdict=`Der PC kann so noch nicht an den Kunden raus. Lest die Hinweise und versucht es noch einmal.`;
+    if(!a.budgetOk) findings.push({cls:"st-bad",m:"✗",h:"Budget",
+      p:"Der PC ist zu teuer für das Budget des Kunden."});
+    if(a.falsch.some(k=>a.st[k.key]==="weak")) findings.push({cls:"st-weak",m:"✗",h:"Zu wenig Leistung",
+      p:"Mindestens ein Bauteil reicht für GTA 6 nicht aus. Vergleicht eure Auswahl noch einmal mit den Systemanforderungen."});
+    if(a.falsch.some(k=>a.st[k.key]==="over")) findings.push({cls:"st-over",m:"!",h:"Verschwendung",
+      p:"Orientiert euch an den Anforderungen des Kunden und verzichtet auf unnötige Ausgaben. Mehr Leistung als nötig kostet nur Geld und Strom."});
+    if(a.falsch.some(k=>k.key==="cpu"||k.key==="gpu")) findings.push({cls:"st-over",m:"?",h:"Datenblätter prüfen",
+      p:"Schaut euch die Datenblätter der Prozessoren und Grafikkarten noch einmal genau an: Wie viele Kerne und Threads hat der Prozessor? Wie viel VRAM hat die Grafikkarte?"});
+  }
+  $("#result").className="result show";
+  $("#result").innerHTML=`
+    <div class="result-head">
+      <span class="stamp ${a.pass?"pass":"fail"}">${a.pass?"Abgenommen":(a.alle?"Nacharbeit":"Unvollständig")}</span>
+      <p class="verdict">${verdict}</p>
+    </div>
+    ${findings.length?`<ul class="findings">${findings.map(f=>`<li class="finding ${f.cls}">
+      <span class="mark">${f.m}</span><span><h3>${f.h}</h3><p>${f.p}</p></span></li>`).join("")}</ul>`:""}
+    ${a.alle&&!a.pass?`<div class="retry"><button class="btn" id="retry">Erneut versuchen</button></div>`:""}
+    ${a.pass&&JOBS.indexOf(job)<JOBS.length-1?`<div class="next"><button class="btn" id="next">Nächster Auftrag &rarr;</button></div>`:""}`;
+  const n=$("#next");
+  if(n) n.addEventListener("click",()=>{
+    const sel=$("#jobsel");
+    sel.value=String(JOBS.indexOf(job)+1);
+    sel.dispatchEvent(new Event("change"));
+  });
+  const r=$("#retry");
+  if(r) r.addEventListener("click",()=>{
+    build={cpu:null,gpu:null,ram:null}; openSlot=null;
+    $("#result").className="result"; render();
+    $("#slots").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+  $("#result").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function buildPrint(){
+  const a=auswertung();
+  const heute=new Date().toLocaleDateString("de-DE");
+  const rows=KINDS.map(k=>{
+    const b=build[k.key];
+    return `<tr><td>${k.label}</td><td>${b?b.n+" ("+b.s+")":"<i>nicht gewählt</i>"}</td><td class="r">${b?euro(b.p):"–"}</td></tr>`;
+  }).join("")+`<tr><td>Grundpaket</td><td>Mainboard, SSD, Netzteil, Kühler, Gehäuse</td><td class="r">${euro(BASIS.p)}</td></tr>`;
+  $("#printview").innerHTML=`
+    <h1>${job.title}</h1>
+    <p class="pmeta">Werkstattauftrag ${job.no} · ${SETTINGS[job.set].n} · Budget ${euro(job.budget)} · ${heute}</p>
+    <p>${job.kunde}</p>
+    <h2>Gewählte Bauteile</h2>
+    <table>
+      <thead><tr><th>Baugruppe</th><th>Bauteil</th><th style="text-align:right">Preis</th></tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot><tr><td colspan="2">Gesamtpreis</td><td class="r">${euro(a.c.price)}</td></tr></tfoot>
+    </table>
+    <h2>Begründung (handschriftlich)</h2>
+    <p style="height:28mm;border-bottom:.4pt solid #999"></p>
+    <h2>Ergebnis</h2>
+    <div class="pstamp">${a.alle?(a.pass?"Abgenommen":"Nacharbeit"):"Unvollständig"}</div>
+    <div class="sign"><div>Namen der Gruppe</div><div>Datum</div></div>`;
+}
+
+/* ---- Ereignisse ---- */
+$("#slots").addEventListener("click",e=>{
+  const s=e.target.closest(".slot-btn");
+  if(s){openSlot=openSlot===s.dataset.slot?null:s.dataset.slot; render(); return;}
+  const p=e.target.closest(".opt");
+  if(!p) return;
+  const kind=p.dataset.kind, item=PARTS[kind].find(x=>x.id===p.dataset.id);
+  build[kind]=(build[kind]&&build[kind].id===item.id)?null:item;
+  if(build[kind]) openSlot=null;
+  render();
+});
+$("#jobsel").addEventListener("change",e=>{
+  job=JOBS[+e.target.value];
+  build={cpu:null,gpu:null,ram:null}; openSlot=null;
+  $("#result").className="result";
+  renderJob(); render(); window.scrollTo({top:0,behavior:"smooth"});
+});
+$("#abnahme").addEventListener("click",abnahme);
+$("#pdf").addEventListener("click",()=>{buildPrint();window.print();});
+
+$("#jobsel").innerHTML=JOBS.map((j,i)=>`<option value="${i}">${j.no} · ${j.title}</option>`).join("");
+renderBasis(); renderJob(); render();
+/* Kein Speichern: Beim Neuladen startet die Seite immer leer mit Auftrag 1 */
+try{["hbfit-gta6-werkstatt:stand","hbfit-gta6-werkstatt:stand2"].forEach(k=>localStorage.removeItem(k));}catch(e){}
+</script>
+</body>
+</html>
